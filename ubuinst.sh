@@ -49,7 +49,7 @@ function title {
   clear
   msg -bar
   if [[ -z $2 ]]; then
-    print_center -azu "$1"
+    print_center -azu "$1" 
   else
     print_center "$1" "$2"
   fi
