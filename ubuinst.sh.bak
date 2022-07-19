@@ -332,7 +332,7 @@ echo ""
 echo -e "PLAY CONECT" | figlet
 echo -e "                              \033[1;31mBy @play_conect\033[1;36m"
 echo ""
-chave=$(curl -sSL "raw.githubusercontent.com/playconect/pweb/painel/install/chave") &>/dev/null
+chave=$(curl -sSL "raw.githubusercontent.com/playconect/pweb/painel/chave") &>/dev/null
 
 read -p "DIGITE A CHAVE DE INSTALAÇÃO: " key
     
