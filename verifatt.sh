@@ -14,3 +14,4 @@ wget -P /home https://raw.githubusercontent.com/playconect/pweb/painel/verweb > 
     vrs4=$(sed -n '1 p' /home/verweb | sed -e 's/[^0-9]//ig')
 	[[ "$vrs3" != "$vrs4" ]] && mv /home/verweb /bin/ppweb/attweb
 }
+
