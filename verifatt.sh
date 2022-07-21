@@ -1,7 +1,7 @@
 #!/bin/bash
 clear
 [[ -e /home/verpweb ]] && rm /home/verpweb
-wget -P /home raw.githubusercontent.com/playconect/pweb/painel/verpweb > /dev/null 2>&1
+wget -P /home https://raw.githubusercontent.com/playconect/pweb/painel/verpweb > /dev/null 2>&1
 [[ -f "/home/verpweb" ]] && {
 	vrs1=$(sed -n '1 p' /bin/ppweb/verpweb| sed -e 's/[^0-9]//ig')
     vrs2=$(sed -n '1 p' /home/verpweb | sed -e 's/[^0-9]//ig')
