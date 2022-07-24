@@ -818,8 +818,8 @@ cd /bin/ppweb/ || exit
 cd  || exit;
 verp=$(cat /bin/ppweb/verpweb) > /dev/null 2>&1
 verw=$(cat /bin/ppweb/verweb) > /dev/null 2>&1
-##verap=$(cat /bin/ppweb/attpweb) > /dev/null 2>&1
-##veraw=$(cat /bin/ppweb/attweb) > /dev/null 2>&1
+verap=$(cat /bin/ppweb/attpweb) > /dev/null 2>&1
+veraw=$(cat /bin/ppweb/attweb) > /dev/null 2>&1
 echo "America/Sao_Paulo" > /etc/timezone &>/dev/null
 ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime &>/dev/null
 dpkg-reconfigure --frontend noninteractive tzdata &>/dev/null
