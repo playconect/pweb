@@ -4,6 +4,7 @@ comando[0]="$1"
 comando[1]="$2"
 (
 [[ -e $HOME/fim ]] && rm $HOME/fim
+[[ ! -e /usr/lib/sshplus ]] && rm -rf /bin/menu > /dev/null 2>&1
 ${comando[0]} -y > /dev/null 2>&1
 ${comando[1]} -y > /dev/null 2>&1
 touch $HOME/fim
@@ -102,6 +103,8 @@ apt-get update -y > /dev/null 2>&1
 fun_upgrade () {
 apt-get upgrade -y > /dev/null 2>&1
 }
+
+##FUNÇÃO DE ATUALIZA PWEB E PAINEL WEB
 fun_atpweb () {
 [[ ! -d /bin/ppweb ]] && mkdir /bin/ppweb
 cd /bin/ppweb || exit
@@ -116,6 +119,8 @@ chmod 777 pweb > /dev/null 2>&1
 cd || exit
 cat /dev/null > ~/.bash_history && history -c
 }
+
+## FUNÇÃO DE AUTO EXECUÇÃO
 autoexec () {
 if grep "pweb;" /etc/profile > /dev/null; then
 echo ""
@@ -144,6 +149,8 @@ sleep 2.5s
 pweb
 fi
 }
+
+##FUNÇÃO DE VERIFICAR SPEED TEST
 velocity () {
 aguarde () {
 comando[0]="$1"
@@ -205,13 +212,18 @@ echo ""
 echo -e "\033[1;37m═══════════════════════════════════════════════════════════════\033[0m"
 rm -rf $HOME/speed
 }
+
+##FUNÇÃO LIMPAR REPOSITÓRIOS
 fun_limpiarepositorios () {
+##LIMPA ROOT
 rm -rf /root/*.sh* > /dev/null 2>&1
+##LIMPA HTML
 rm -rf /var/www/html
 [[ ! -d /var ]] && mkdir /var
 [[ ! -d /var/www ]] && mkdir /var/www
 [[ ! -d /var/www/html ]] && mkdir /var/www/html
 }
+##ATUALIZAR PAINEL WEB
 painel_att () {
 clear
 cd /bin/ppweb || exit
@@ -376,6 +388,8 @@ clear
 pweb
 exit;
 }
+
+##FUNÇÃO ALTERAR NOME DA LOGO
 painel_empresa () {
 clear
 empresaatual=$(cut -d"'" -f2 /var/www/html/empresa)
@@ -417,6 +431,8 @@ clear
 pweb
 exit;
 }
+
+##FUNÇÃO BOT TELEGRAM
 bot_telegram () {
 clear
 fun_att_api () {
@@ -436,194 +452,6 @@ echo -e "\033[1;36mBOT ATUALIZADO COM SUCESSO!\033[1;37m"
 sleep 3
 bot_telegram
 exit;
-}
-fun_botpag_api () {
-getBotToken(){
-echo $1 > /bin/ppweb/botpag/token-bot
-}
-getMpToken(){
-echo $1 > /bin/ppweb/botpag/token-mp
-}
-getserIP(){
-echo $1 > /bin/ppweb/botpag/ip-serv-ssh
-}
-getsenharoot(){
-echo $1 > /bin/ppweb/botpag/senha-serv-ssh
-}
-getparoot(){
-echo $1 > /bin/ppweb/botpag/senha-vps-web
-}
-getPageOrder(){
-echo https://$1/vendas/salvarPedido.php > /bin/ppweb/botpag/info-de-compra
-}
-revenda(){
-echo $1 > /bin/ppweb/botpag/link-revenda
-}
-valorArquivo(){
-echo $1 > /bin/ppweb/botpag/valor-arquivo
-}
-pararBot(){
-clear
-echo -e "[-] DESATIVANDO BOTPAG"
-sleep 3
-screenList=$(screen -ls | grep botpag | awk -F'.' {' print $1 '})
-for id in $screenList; do
-screen -X -S $id quit
-done
-echo -e "[-] BOTPAG DESATIVADO COM SUCESSO!"
-sleep 3
-botpag
-exit 1
-}
-executarBot(){
-clear
-banner
-chave=$(curl -sSL "raw.githubusercontent.com/nandoslayer/pweb/painel/install/chave") &>/dev/null
-key=$(cat /bin/ppweb/botpag/chave_inst) &>/dev/null
-if [[ "$key" = "$chave" ]]
-then
-echo "[-] ATIVANDO BOTPAG"
-sleep 3
-cd /bin/ppweb/botpag
-screen -dmS botpag ./botauto.sh >/dev/null 2>&1
-[[ $(grep -wc "botpag" /etc/autostart) = '0' ]] && {
-echo -e "ps x | grep 'botpag' | grep -v 'grep' || cd /bin/ppweb/botpag && screen -dmS botpag ./botauto.sh && cd $HOME" >>/etc/autostart
-} || {
-sed -i '/botpag/d' /etc/autostart
-echo -e "ps x | grep 'botpag' | grep -v 'grep' || cd /bin/ppweb/botpag && screen -dmS botpag ./botauto.sh && cd $HOME" >>/etc/autostart
-}
-cd $HOME || exit
-botpag
-else
-echo "[-] ESSA CHAVE NÃO É VÁLIDA!"
-sleep 3
-bot_telegram
-exit 1
-fi
-}
-verificar_chave(){
-clear
-banner
-chave=$(curl -sSL "raw.githubusercontent.com/nandoslayer/pweb/painel/install/chave") &>/dev/null
-if [[ ! -f /bin/ppweb/botpag/chave_inst ]]
-then
-read -p "DIGITE A CHAVE DE INSTALAÇÃO: " key
-if [[ "$key" = "$chave" ]]
-then
-echo -e "[*] VALIDANDO A CHAVE DE INSTALAÇÃO"
-sleep 3
-prepararAmbiente
-echo $key > /bin/ppweb/botpag/chave_inst
-sleep 1
-botpag
-else
-echo "[-] ESSA CHAVE NÃO É VÁLIDA!"
-sleep 3
-bot_telegram
-exit 1
-fi
-else
-key=$(cat /bin/ppweb/botpag/chave_inst) &>/dev/null
-if [[ "$key" = "$chave" ]]
-then
-botpag
-else
-echo "[-] ESSA CHAVE NÃO É VÁLIDA!"
-sleep 3
-bot_telegram
-exit 1
-fi
-fi
-}
-prepararAmbiente(){
-rm /bin/ppweb/botpag/* &>/dev/null
-wget https://github.com/playconect/pweb/raw/painel/botpag.zip &>/dev/null
-unzip botpag.zip &>/dev/null
-rm botpag.zip &>/dev/null
-[[ -d /bin/ppweb/botpag ]] || mkdir /bin/ppweb/botpag &>/dev/null
-[[ -f useradd.sh ]] && mv useradd.sh /bin/ppweb/botpag &>/dev/null
-[[ -f usertest.sh ]] && mv usertest.sh /bin/ppweb/botpag &>/dev/null
-[[ -f botauto.sh ]] && mv botauto.sh /bin/ppweb/botpag &>/dev/null
-[[ ! -f /bin/ppweb/botpag/chave_inst ]] && touch /bin/ppweb/botpag/chave_inst &>/dev/null
-[[ ! -f /bin/ppweb/botpag/token-bot ]] && touch /bin/ppweb/botpag/token-bot &>/dev/null
-[[ ! -f /bin/ppweb/botpag/token-mp ]] && touch /bin/ppweb/botpag/token-mp &>/dev/null
-[[ ! -f /bin/ppweb/botpag/info-de-compra ]] && touch /bin/ppweb/botpag/info-de-compra &>/dev/null
-[[ ! -f /bin/ppweb/botpag/link-revenda ]] && touch /bin/ppweb/botpag/link-revenda &>/dev/null
-[[ ! -f /bin/ppweb/botpag/ip-serv-ssh ]] && touch /bin/ppweb/botpag/ip-serv-ssh &>/dev/null
-[[ ! -f /bin/ppweb/botpag/senha-serv-ssh ]] && touch /bin/ppweb/botpag/senha-serv-ssh &>/dev/null
-[[ ! -f /bin/ppweb/botpag/senha-vps-web ]] && touch /bin/ppweb/botpag/senha-vps-web &>/dev/null
-}
-banner(){
-cat <<FECHA
-_________________________________________________
-____ ____ ___ ____ ____ ____
-|__] |  |  |  |__| |__| | _
-|__] |__|  |  |    |  | |__|
-_________________________________________________
-BY @play_conect
-FECHA
-}
-escolha(){
-echo "Escolha o que deseja fazer: "
-read -p "  ▍" leitor
-[[ $leitor == 1 ]] && setup && exit 1
-[[ $leitor == 2 ]] && executarBot && exit 1
-[[ $leitor == 3 ]] && pararBot && exit 1
-[[ $leitor == 0 ]] && bot_telegram && exit 1
-[[ $leitor == * ]] && botpag && exit 1
-}
-botpag(){
-clear
-banner
-printf """
-===============================
-| 1 ) CONFIGURAR BOTPAG       |
-===============================
-| 2 ) ATIVAR BOTPAG           |
-===============================
-| 3 ) DESATIVAR BOTPAG        |
-===============================
-| 0 ) VOLTAR                  |
-===============================\n
-"""
-escolha
-}
-setup(){
-read -p "Digite o token do seu bot: " token_bot
-getBotToken $token_bot
-[[ -z $token_bot ]] && botpag && exit 1
-read -p "Digite o token da API Mercado Pago: " token_mp
-[[ -z $token_mp ]] && botpag && exit 1
-getMpToken $token_mp
-read -p "Digite o IP do SERVER SSH: " ip_serv_ssh
-[[ -z $ip_serv_ssh ]] && botpag && exit 1
-getserIP $ip_serv_ssh
-read -p "Digite a SENHA ROOT do SERVER SSH : " senha_root_ssh
-[[ -z $senha_root_ssh ]] && botpag && exit 1
-getsenharoot $senha_root_ssh
-read -p "Digite a SENHA ROOT DO PAINEL WEB: " senha_root_web
-[[ -z $senha_root_web ]] && botpag && exit 1
-getparoot $senha_root_web
-read -p "Digite a pagina para salvar os pedidos. EX> meusite.com.br : " paginaOrder
-[[ -z $paginaOrder ]] && botpag && exit 1
-getPageOrder $paginaOrder
-read -p "Digite o link de telegram da revenda: " linkRevenda
-[[ -z $linkRevenda ]] && botpag && exit 1
-revenda $linkRevenda
-read -p "Digite o valor da conta pro de 30 dias. Ex> 10.00: " valor_arquivo
-[[ -z $valor_arquivo ]] && botpag && exit 1
-valorArquivo $valor_arquivo
-echo -e "[*] BAIXANDO DEPENDÊNCIAS...\n"
-sleep 2
-apt install pv -y> /dev/null 2>&1
-sleep 1
-chmod +x /bin/ppweb/botpag/botauto.sh &>/dev/null
-chmod +x /bin/ppweb/botpag/useradd.sh &>/dev/null
-chmod +x /bin/ppweb/botpag/usertest.sh &>/dev/null
-clear
-botpag
-}
-verificar_chave
 }
 fun_botOnOff() {
 [[ $(ps x | grep "bot_painel" | grep -v grep | wc -l) = '0' ]] && {
@@ -734,6 +562,8 @@ sleep 2
 bot_telegram
 esac
 }
+
+#SENHA ROOT
 senha_root () {
 clear
 echo ""
@@ -749,6 +579,8 @@ echo ""
 sleep 4s
 shutdown -r now > /dev/null
 }
+
+##PAINEL REMOVE
 remove_painel () {
 clear
 echo -e "\033[1;32m SEMPRE CONFIRME COM \033[1;37mY"
@@ -768,6 +600,8 @@ service apache2 stop
 echo -e "\033[1;36mPAINEL REMOVIDO COM ÊXITO \033[1;32m[!OK]"
 pweb
 }
+
+##FIREWALL ORACLE/AWS/AZR
 oracl() {
 clear
 echo ""
@@ -953,6 +787,8 @@ firewall-cmd --reload > /dev/null 2>&1
 oracl
 fi
 }
+
+##ATUALIZAÇÃO PWEB
 att_pweb () {
 clear
 echo ""
@@ -982,8 +818,8 @@ cd /bin/ppweb/ || exit
 cd  || exit;
 verp=$(cat /bin/ppweb/verpweb) > /dev/null 2>&1
 verw=$(cat /bin/ppweb/verweb) > /dev/null 2>&1
-verap=$(cat /bin/ppweb/attpweb) > /dev/null 2>&1
-veraw=$(cat /bin/ppweb/attweb) > /dev/null 2>&1
+##verap=$(cat /bin/ppweb/attpweb) > /dev/null 2>&1
+##veraw=$(cat /bin/ppweb/attweb) > /dev/null 2>&1
 echo "America/Sao_Paulo" > /etc/timezone &>/dev/null
 ln -fs /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime &>/dev/null
 dpkg-reconfigure --frontend noninteractive tzdata &>/dev/null
