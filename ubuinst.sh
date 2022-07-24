@@ -202,8 +202,8 @@ wget  https://github.com/playconect/pweb/raw/painel/verpweb > /dev/null 2>&1
 wget  https://github.com/playconect/pweb/raw/painel/verweb > /dev/null 2>&1
 verp=$(sed -n '1 p' /bin/ppweb/verpweb| sed -e 's/[^0-9]//ig') &>/dev/null
 verw=$(sed -n '1 p' /bin/ppweb/verweb| sed -e 's/[^0-9]//ig') &>/dev/null
-echo -e "$verp" >/bin/ppweb/verpweb
-echo -e "$verw" >/bin/ppweb/verweb
+echo -e "$verp" >/bin/ppweb/attpweb
+echo -e "$verw" >/bin/ppweb/attweb
 chmod 777 *.sh > /dev/null 2>&1
 [[ ! -e /etc/autostart ]] && {
 	echo '#!/bin/bash
